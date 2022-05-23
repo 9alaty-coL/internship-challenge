@@ -15,11 +15,51 @@
                 margin: 0;
                 font-family: "Roboto", sans-serif;
                 min-height: 100vh;
+                position: relative;
+                padding-bottom: 100px;
+                box-sizing: border-box;
+            }
+            h1#Manabie__title{
+                width : 100%;
+                overflow:hidden;
+                /* display:inline-block; */
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                position: relative;
+                /* z-index: 5; */
+            }
+            h1#Manabie__title::after{
+                padding: 0;
+                margin: 0;
+                content:"Title - Welcome to Manabie internship coding challenge. Thank you for interested in our vacancy of Frontend Engineer. As discussed, we would love to have a more in depth conversation with you";
+                position: absolute;
+                left: 10%;
+                top: 0%;
+                background-color: #333e;
+                color: #ccc;
+                font-size: 1rem;
+                width: 80%;
+                display: inline-block;
+                white-space: normal;
+                opacity: 0;
+                visibility: none;
+                transition: all 0.3s ease;
+            }
+            h1#Manabie__title:hover::after{
+                visibility: visible;
+                opacity: 1;
             }
             footer {
                 background-color: rgb(57, 90, 210);
                 padding: 16px 8px;
+                box-sizing: border-box;
                 color: white;
+            }
+            footer#Manabie__footer{
+                width: 100%;
+                color: white;
+                position: absolute;
+                bottom: 0px;
             }
             main {
                 margin: 16px;
@@ -31,11 +71,22 @@
             table td,
             table th {
                 border: 1px solid #ddd;
-                padding-left: 4px;
-                padding-right: 4px;
+                padding: 5px;
             }
             table th {
                 text-align: left;
+            }
+            table#Manabie__table{
+                border: 2px solid #333;
+                box-shadow: #ccc 5px 5px 5px ;
+            }
+            table#Manabie__table th{
+                background-color: darkblue;
+                color: white;
+                padding: 10px 6px;
+            }
+            table#Manabie__table tr:nth-child(odd){
+                background-color: #ddd;
             }
             span.Manabie__quote {
                 background-color: #cccccc;
@@ -101,7 +152,7 @@
     </body>
 
     <script>
-        function addNewCellInTable() {
+        function addNewCellInTable(id, name, os, bat) {
             var table = document.getElementById("Manabie__table");
             var row = table.insertRow(1); // the first row is hearder
             var cellID = row.insertCell(0);
@@ -111,12 +162,41 @@
             // If Battery grather than 90 the status is good, the other is bad
             var cellStatus = row.insertCell(4);
 
-            cellID.innerHTML = "1";
-            cellName.innerHTML = "Iphone 13";
-            cellOS.innerHTML = "Apple";
-            cellBattery.innerHTML = "92";
-            cellStatus.innerHTML = "Good";
+            cellID.innerHTML = id;
+            cellName.innerHTML = name;
+            cellOS.innerHTML = os;
+            cellBattery.innerHTML = bat;
+            cellStatus.innerHTML = +bat > 90 ? 'Good' : 'Bad';
         }
-        addNewCellInTable();
+
+
+        // Get data through API
+        const fetchData = async () => {
+            try {
+                const res = await fetch('https://zwxiws.sse.codesandbox.io/')
+                if (!res.ok){
+                    console.log('fetch failed!')
+                    return []
+                }
+                const data = await res.json()
+                return data
+            } catch (error) {
+                alert('follow this link to enable the api https://zwxiws.sse.codesandbox.io/ ')
+            }
+
+        }
+
+
+        // use fetched data and insert to DOM
+        const getPhones = async() => {
+            const listPhone = await fetchData()
+            listPhone.reverse()
+            listPhone.forEach(value => {
+                addNewCellInTable(value.id, value.name, value.os, value.battery)
+            });
+        }
+
+        getPhones()
+
     </script>
 </html>
